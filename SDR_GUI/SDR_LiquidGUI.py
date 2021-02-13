@@ -49,6 +49,19 @@ def startup():
 def allOff():
     try:
         arduinoSwitchbox.write(b'8')
+        switch1.actionOff()
+        time.sleep(0.001)
+        switch2.actionOff()
+        time.sleep(0.001)
+        switch3.actionOff()
+        time.sleep(0.001)
+        switch4.actionOff()
+        time.sleep(0.001)
+        switch5.actionOff()
+        time.sleep(0.001)
+        switch6.actionOff()
+        plumbing.s2.setPercentage(0)
+        plumbing.s1.setPercentage(0)
     except:
         print('Connection Error')
     switch1.setLedState(False)
@@ -57,6 +70,9 @@ def allOff():
     switch4.setLedState(False)
     switch5.setLedState(False)
     switch6.setLedState(False)
+    switch7.scale.set(0)
+    switch8.scale.set(0)
+
     plumbing.one.setState(False)
     plumbing.two.setState(False)
     plumbing.three.setState(False)
@@ -64,30 +80,13 @@ def allOff():
     plumbing.five.setState(False)
     plumbing.six.setState(False)
 
-    switch7.scale.set(0)
-    plumbing.s2.setPercentage(0)
-    switch8.scale.set(0)
-    plumbing.s1.setPercentage(0)
-
-    switch1.actionOff()
-    time.sleep(0.001)
-    switch2.actionOff()
-    time.sleep(0.001)
-    switch3.actionOff()
-    time.sleep(0.001)
-    switch4.actionOff()
-    time.sleep(0.001)
-    switch5.actionOff()
-    time.sleep(0.001)
-    switch6.actionOff()
-
     print("All OFF COMPLETE")
 
 # THREADING METHOD
 # Runs in parallel with the GUI main loop
 def actionHandler():
     global msg
-    global root, switch1, switch2, switch3, switch4, switch5, switch6, switch7, switch8
+    global root, switch1, switch2, switch3, switch4, switch5, switch6, switch7, switch8, prevCon
     while True:
         time.sleep(0.001)
         if(msg == 'start'):
@@ -99,59 +98,62 @@ def actionHandler():
             #TEST SEQUENCE
             delay = 0.2
             delaySlider = 0.002
-            for i in range(2):
-                try:
-
-                    print('Trigger Relay 1')
-                    switch1.actionOn()
-                    time.sleep(delay)
-                    print('Trigger Relay 2')
-                    switch2.actionOn()
-                    time.sleep(delay)
-                    print('Trigger Relay 3')
-                    switch3.actionOn()
-                    time.sleep(delay)
-                    print('Trigger Relay 4')
-                    switch4.actionOn()
-                    time.sleep(delay)
-                    print('Trigger Relay 5')
-                    switch5.actionOn()
-                    time.sleep(delay)
-                    print('Trigger Relay 6')
-                    switch6.actionOn()
-                    time.sleep(delay)
-                    print('Trigger Relay 6')
-                    switch6.actionOff()
-                    time.sleep(delay)
-                    print('Trigger Relay 5')
-                    switch5.actionOff()
-                    time.sleep(delay)
-                    print('Trigger Relay 4')
-                    switch4.actionOff()
-                    time.sleep(delay)
-                    print('Trigger Relay 3')
-                    switch3.actionOff()
-                    time.sleep(delay)
-                    print('Trigger Relay 2')
-                    switch2.actionOff()
-                    time.sleep(delay)
-                    print('Trigger Relay 1')
-                    switch1.actionOff()
-                    time.sleep(delay)
-                    for j in range(0, 101):
-                        switch7.scale.set(j)
-                        time.sleep(delaySlider)
-                    for j in range(0, 101):
-                        switch7.scale.set(100-j)
-                        time.sleep(delaySlider)
-                    for j in range(0, 101):
-                        switch8.scale.set(j)
-                        time.sleep(delaySlider)
-                    for j in range(0, 101):
-                        switch8.scale.set(100-j)
-                        time.sleep(delaySlider)
-                except:
-                    print('ERROR')
+            if(prevCon):
+                for i in range(2):
+                    try:
+                        print('Trigger Relay 1')
+                        switch1.actionOn()
+                        time.sleep(delay)
+                        print('Trigger Relay 2')
+                        switch2.actionOn()
+                        time.sleep(delay)
+                        print('Trigger Relay 3')
+                        switch3.actionOn()
+                        time.sleep(delay)
+                        print('Trigger Relay 4')
+                        switch4.actionOn()
+                        time.sleep(delay)
+                        print('Trigger Relay 5')
+                        switch5.actionOn()
+                        time.sleep(delay)
+                        print('Trigger Relay 6')
+                        switch6.actionOn()
+                        time.sleep(delay)
+                        print('Trigger Relay 6')
+                        switch6.actionOff()
+                        time.sleep(delay)
+                        print('Trigger Relay 5')
+                        switch5.actionOff()
+                        time.sleep(delay)
+                        print('Trigger Relay 4')
+                        switch4.actionOff()
+                        time.sleep(delay)
+                        print('Trigger Relay 3')
+                        switch3.actionOff()
+                        time.sleep(delay)
+                        print('Trigger Relay 2')
+                        switch2.actionOff()
+                        time.sleep(delay)
+                        print('Trigger Relay 1')
+                        switch1.actionOff()
+                        time.sleep(delay)
+                        for j in range(0, 101):
+                            switch7.scale.set(j)
+                            time.sleep(delaySlider)
+                        for j in range(0, 101):
+                            switch7.scale.set(100-j)
+                            time.sleep(delaySlider)
+                        for j in range(0, 101):
+                            switch8.scale.set(j)
+                            time.sleep(delaySlider)
+                        for j in range(0, 101):
+                            switch8.scale.set(100-j)
+                            time.sleep(delaySlider)
+                    except:
+                        print('ERROR')
+            else:
+                print('Serial Error: Arduino Not Connected or Detected')
+                time.sleep(0.1)
 
 
 
@@ -161,7 +163,7 @@ def actionHandler():
 
 
 if __name__ == '__main__':
-    global root, switch1, switch2, switch3, switch4, switch5, switch6, switch7, switch8, a, b, c, d, off, g1, g2, g3, g4, connectionLabel, plumbing, fileName, arduinoSwitchbox
+    global root, switch1, switch2, switch3, switch4, switch5, switch6, switch7, switch8, a, b, c, d, off, g1, g2, g3, g4, connectionLabel, plumbing, fileName, arduinoSwitchbox, prevCon
 
     #ACTION HANDLER THREAD
     thread = threading.Thread(target=actionHandler)
@@ -277,8 +279,7 @@ if __name__ == '__main__':
         try:
             strSerial = conv(str(arduinoSwitchbox.readline()))
         except SerialException:
-            strSerial = ''
-            print("Serial Error")
+            strSerial = ''#
 
         data = strSerial.split("\\t")
 
